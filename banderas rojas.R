@@ -2,14 +2,17 @@
 
 #### Cargar librerías ####
 library(tidyverse)
-library(DataExplorer)
 library(janitor)
 
 #### Cargar y preparar datos ####
 load("data_final.RData")
 
+### Filtrar para solo tener las licitaciones de "RAMOS ADMINISTRATIVOS" ###
+data_final2 <- data_final %>%
+  filter(tipo_ramo == "RAMOS ADMINISTRATIVOS")
+
 ### Formato de  fechas ###
-data_final_banderas <- data_final %>%
+data_final_banderas <- data_final2 %>%
   mutate(
     tender_tender_period_end_date = ymd_hms(tender_tender_period_end_date),
     datePublished = ymd_hms(datePublished),
@@ -151,4 +154,7 @@ promedio_CRI_por_ramo <- banderas_rojas %>%
     )
   ) %>% 
   arrange(desc(promedio_CRI)) 
+
+global_cri <- mean(banderas_rojas$CRI, na.rm = TRUE)
+
 
