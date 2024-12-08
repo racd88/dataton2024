@@ -22,11 +22,15 @@ data_final_banderas <- data_final_banderas %>%
     diff_entrega_dias = as.numeric(difftime(tender_tender_period_end_date, tender_tender_period_start_date, units = "days"))
   )
 
-### Estadisticos de las diferencias ###
+### Estadísticos de las diferencias ###
 mean_decision <- mean(data_final_banderas$diff_decision_dias, na.rm = TRUE)
 sd_decision <- sd(data_final_banderas$diff_decision_dias, na.rm = TRUE)
 mean_submission <- mean(data_final_banderas$diff_entrega_dias, na.rm = TRUE)
 sd_submission <- sd(data_final_banderas$diff_entrega_dias, na.rm = TRUE)
+
+### Filtrar fuera OCIDS con el sufijo _2 ###
+data_final_banderas <- data_final_banderas %>%
+  filter(!grepl("_2", ocid2))
 
 #### Creación de banderas rojas#### 
 
@@ -138,7 +142,7 @@ banderas_rojas <- banderas_rojas %>%
     )
   )
 
-promedio_CRI_por_ramo <- banderas_rojas %>%
+promedio_cri_por_ramo <- banderas_rojas %>%
   group_by(descripcion_ramo) %>%
   summarise(promedio_CRI = mean(CRI, na.rm = TRUE)) %>%
   mutate(
@@ -153,4 +157,10 @@ promedio_CRI_por_ramo <- banderas_rojas %>%
 
 global_cri <- mean(banderas_rojas$CRI, na.rm = TRUE)
 
+### Guardar resultados para ShinyApp ###
+saveRDS(list(
+  banderas_rojas = banderas_rojas,
+  promedio_cri_por_ramo = promedio_cri_por_ramo,
+  global_cri = global_cri
+), file = "datos_app.RDS")
 
