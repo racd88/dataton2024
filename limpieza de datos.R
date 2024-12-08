@@ -138,19 +138,24 @@ criterios_evaluacion <- contrataciones4 %>%
 
 ### Ciclo ###
 año_proceso <- contrataciones4 %>% 
-  select(ocid2, date) %>% 
+  select(ocid2, date, tender_tender_period_start_date) %>% 
   distinct() %>% 
   mutate(
-    date = ymd_hms(date),  
-    año_proceso = year(date) 
-  )
+    date = ymd_hms(date),
+    tender_start = ymd_hms(tender_tender_period_start_date),
+    fecha_final = if_else(is.na(date), tender_start, date),
+    año_proceso = year(fecha_final)
+  ) %>%
+  select(ocid2, año_proceso)
 
 ### Monto por adjudicación ###
 monto <- awards %>% 
   select(ocid2, value.amount, value.currency) %>% 
-  distinct()
+  group_by(ocid2) %>%
+  slice_head(n = 1) %>%  # toma solo el primer registro de cada ocid2
+  ungroup()
 
-### Proveedores unicoas que ganaron ###
+### Proveedores unicos que ganaron ###
 proveedores_unicos <- suppliers %>% 
   select(ocid2, id, name) %>% 
   distinct()
@@ -203,7 +208,6 @@ comparacion <- compradores_limpios %>%
 compradores_ramos <- compradores_limpios %>%
   left_join(ramos_limpios, by = c("buyer_name" = "institucion"))
 
-
 data_final <- licitantes_por_ocid %>%
   left_join(fecha_termino_propuestas, by = "ocid2") %>%
   left_join(fecha_adjudicacion, by = "ocid2") %>%
@@ -211,7 +215,13 @@ data_final <- licitantes_por_ocid %>%
   left_join(metodo_adjudicacion, by = "ocid2") %>%
   left_join(metodo_presentacion, by = "ocid2") %>%
   left_join(criterios_evaluacion, by = "ocid2") %>%
-  left_join(año_proceso %>% select(-date), by = "ocid2") %>%  # -date si no la necesitas
+  left_join(año_proceso, by = "ocid2") %>%  # -date si no la necesitas
   left_join(monto, by = "ocid2") %>%
   left_join(proveedores_unicos, by = "ocid2") %>%
   left_join(compradores_ramos, by = "ocid2")
+
+#### Creación de DB final para análisis ####
+
+# Guardar datos finales
+save(data_final, file = "data_final.RData")
+
