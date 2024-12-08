@@ -2,21 +2,19 @@ library(shiny)
 library(dplyr)
 library(DT)
 
-# Antes de iniciar la aplicación, cargamos el script con los datos y funciones
-source("banderas rojas.R")  # Ajusta el nombre y la ruta según corresponda
+datos <- readRDS("datos_app.RDS")
+banderas_rojas <- datos$banderas_rojas
+promedio_cri_por_ramo <- datos$promedio_cri_por_ramo
+global_cri <- datos$global_cri
 
-# Suponemos que tras ejecutar "banderas rojas.R" tenemos 'data_final_banderas' y variables derivadas.
 
-# Interfaz de Usuario
 ui <- fluidPage(
   titlePanel("Índice de Riesgo de Corrupción (CRI)"),
-  
   sidebarLayout(
     sidebarPanel(
       h3("Descripción"),
       p("Esta aplicación muestra el Índice de Riesgo de Corrupción (CRI) calculado a partir de banderas rojas en los procesos de licitación.")
     ),
-    
     mainPanel(
       tabsetPanel(
         tabPanel("Global",
@@ -27,7 +25,7 @@ ui <- fluidPage(
                  h4("Promedio del CRI por Ramo"),
                  dataTableOutput("tabla_ramo")
         ),
-        tabPanel("Detalle por Proceso",
+        tabPanel("Por Licitación",
                  h4("Detalle del CRI por ocid"),
                  dataTableOutput("tabla_ocid")
         )
@@ -36,21 +34,17 @@ ui <- fluidPage(
   )
 )
 
-# Servidor
 server <- function(input, output, session) {
   
-  # Promedio global
   output$cri_global <- renderText({
     paste("El promedio global del CRI es:", round(global_cri, 3))
   })
   
-  # Tabla por ramo
   output$tabla_ramo <- renderDataTable({
     promedio_cri_por_ramo %>%
       mutate(promedio_CRI = round(promedio_CRI, 3))
   })
   
-  # Tabla con detalle por ocid
   output$tabla_ocid <- renderDataTable({
     banderas_rojas %>%
       select(ocid2, CRI) %>%
@@ -58,5 +52,4 @@ server <- function(input, output, session) {
   })
 }
 
-# Ejecutar la app
 shinyApp(ui, server)
