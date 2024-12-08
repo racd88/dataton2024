@@ -5,7 +5,7 @@ account: royo88
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13552797
-bundleId: 9483384
+bundleId: 9483604
 url: https://royo88.shinyapps.io/dataton2024/
 version: 1
 asMultiple: FALSE
