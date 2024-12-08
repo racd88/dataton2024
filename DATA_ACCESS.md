@@ -17,3 +17,4 @@ Los archivos de datos se encuentran disponibles en OneDrive debido a su tamaño:
 - datos/puebla_releases.json
 - datos/quintanaRoo_releases.json
 - datos/veracruz_releases.json
+- PIC_UnidadesCompradoras_20241207
