@@ -222,6 +222,10 @@ data_final <- licitantes_por_ocid %>%
 
 #### Creación de DB final para análisis ####
 
+### Filtrar para solo tener las licitaciones de "RAMOS ADMINISTRATIVOS" ###
+data_final <- data_final %>%
+  filter(tipo_ramo == "RAMOS ADMINISTRATIVOS")
+
 # Guardar datos finales
 save(data_final, file = "data_final.RData")
 
