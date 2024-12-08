@@ -7,12 +7,8 @@ library(janitor)
 #### Cargar y preparar datos ####
 load("data_final.RData")
 
-### Filtrar para solo tener las licitaciones de "RAMOS ADMINISTRATIVOS" ###
-data_final2 <- data_final %>%
-  filter(tipo_ramo == "RAMOS ADMINISTRATIVOS")
-
 ### Formato de  fechas ###
-data_final_banderas <- data_final2 %>%
+data_final_banderas <- data_final %>%
   mutate(
     tender_tender_period_end_date = ymd_hms(tender_tender_period_end_date),
     datePublished = ymd_hms(datePublished),
