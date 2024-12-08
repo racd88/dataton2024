@@ -5,7 +5,7 @@ account: reporte-capacitacion-teclab
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13552419
-bundleId: 9483135
+bundleId: 9483226
 url: https://reporte-capacitacion-teclab.shinyapps.io/dataton2024/
 version: 1
 asMultiple: FALSE
