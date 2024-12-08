@@ -1,4 +1,4 @@
-# Dataton2024
+# Datatón2024
 Proyecto de datos para el Sistema Nacional Anticorrupción
 
 ## Organizador
